@@ -17,7 +17,7 @@ class SlackAPI():
             response = client.send(text=message)
             assert response.status_code == 200
             assert response.body == "ok"
-            ret = {"ok": True}
+            ret = {"ok": True, "response": response}
 
         except Exception as e:
             ret = {"ok": False, "exception": str(e)}

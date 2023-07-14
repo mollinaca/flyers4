@@ -2,6 +2,7 @@
 import json
 import lib
 import config
+import service_york
 
 def main():
 
@@ -14,6 +15,16 @@ def main():
 
     for shop in TARGET:
       print (shop, TARGET[shop])
+      if shop == "ヨークマート":
+        print (shop)
+        ret = service_york.main()
+        print (ret)
+        slack_clinet = lib.SlackAPI()
+        res = slack_clinet.iwebhook(ret)
+        print (res)
+        exit (1)
+      else:
+        pass
 
 
     slack_clinet = lib.SlackAPI()
