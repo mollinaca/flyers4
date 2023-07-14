@@ -11,8 +11,8 @@ class SlackAPI():
     def iwebhook(self, message:str = "None") -> json:
         ret = {"ok": False}
 
-        client = WebhookClient(os.environ["SLACK_WEBHOOK_URL_DEV"])
         # client = WebhookClient(os.environ["SLACK_WEBHOOK_URL"])
+        client = WebhookClient(os.environ["SLACK_WEBHOOK_URL_DEV"])
         try:
             response = client.send(text=message)
             assert response.status_code == 200

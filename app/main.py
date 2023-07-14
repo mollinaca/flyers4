@@ -18,17 +18,18 @@ def main():
       if shop == "ヨークマート":
         print (shop)
         ret = service_york.main()
-        print (ret)
-        slack_clinet = lib.SlackAPI()
-        res = slack_clinet.iwebhook(ret)
+
+        slack_client = lib.SlackAPI()
+        ret = slack_client.iwebhook(str(ret))
         print (res)
+
         exit (1)
       else:
         pass
 
 
-    slack_clinet = lib.SlackAPI()
-    res = slack_clinet.iwebhook("test message")
+    slack_client = lib.SlackAPI()
+    res = slack_client.iwebhook("test message")
     return 0
 
 
