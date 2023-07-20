@@ -3,4 +3,6 @@ services:
   flyers4:
     build:
       context: .
-      dockerfile: Dockerfile
+      target: production-stage
+    volumes:
+      - ./app/data:/app/data
