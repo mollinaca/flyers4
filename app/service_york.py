@@ -1,4 +1,5 @@
 import os
+import time
 import requests
 from bs4 import BeautifulSoup
 import lib
@@ -42,16 +43,21 @@ def main(shop:str, last_json:dict) -> dict:
         return res
 
     for url in res["urls"]:
+        time.sleep (1)
         if url in last_json[shop]:
-            print ("already uploaded")
             latest_upload.append(url)
         else:
             p = lib.dl(url)
+            if p["ok"]:
+                p = p["filename"]
+            else:
+                ret = {"ok": False, "p": p}
+
             slack_client = lib.SlackAPI()
             res = slack_client.upload_file_to_slack(p)
-            print (res)
+            if res["ok"]:
+                latest_upload.append(url)
             os.remove(p)
-            latest_upload.append(url)
 
     ret = {"ok": True, "latest_upload": latest_upload}
     return ret
