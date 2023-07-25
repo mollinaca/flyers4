@@ -1,6 +1,3 @@
-#!/usr/bin/env python3
-import json
-import sys
 import os
 import shutil
 import requests
@@ -9,6 +6,7 @@ from slack_sdk import WebhookClient, WebClient
 from slack_sdk.errors import SlackApiError
 import config as c
 load_dotenv()
+
 
 def dl(url: str) -> dict:
     filename = os.path.basename(url)
@@ -24,7 +22,7 @@ def dl(url: str) -> dict:
             shutil.copyfileobj(res.raw, f)
 
         ret = {"ok": True, "filename": filename}
-    
+
     except Exception as e:
         ret = {"ok": False, "e": str(e)}
 
@@ -33,11 +31,11 @@ def dl(url: str) -> dict:
 
 class SlackAPI():
 
-    def iwebhook(self, message:str = "None") -> dict:
+    def iwebhook(self, message: str = "None") -> dict:
         ret = {"ok": False}
 
         if c.development_mode:
-            client = WebhookClient(os.environ["SLACK_WEBHOOK_URL_DEV"])
+            client = WebhookClient(token=os.environ["SLACK_WEBHOOK_URL_DEV"])
         else:
             client = WebhookClient(token=os.environ["SLACK_WEBHOOK_URL"])
 
@@ -52,15 +50,23 @@ class SlackAPI():
 
         return ret
 
-    def upload_file_to_slack(self, filepath:str = "None") -> dict:
+    def upload_file_to_slack(self, filepath: str = "None", title: str = None) -> dict:
         ret = {"ok": False}
         client = WebClient(token=os.environ['SLACK_BOT_TOKEN'])
 
         try:
             if c.development_mode:
-                response = client.files_upload_v2(channel=os.environ["SLACK_CHANNEL_ID_DEV"], file=filepath)
+                response = client.files_upload_v2(
+                    channel=os.environ["SLACK_CHANNEL_ID_DEV"],
+                    file=filepath,
+                    title=title
+                    )
             else:
-                response = client.files_upload_v2(channel=os.environ["SLACK_CHANNEL_ID"], file=filepath)
+                response = client.files_upload_v2(
+                    channel=os.environ["SLACK_CHANNEL_ID"],
+                    file=filepath,
+                    title=title
+                    )
 
             assert response["file"]
             ret = {"ok": True, "response": response}

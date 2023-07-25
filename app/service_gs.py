@@ -2,12 +2,10 @@ import os
 import time
 import requests
 import hashlib
-from bs4 import BeautifulSoup
 import lib
-import config as c
 
 
-def get_flyer_url_alive(url:str) -> dict:
+def get_flyer_url_alive(url: str) -> dict:
     ret = {"ok": False}
     try:
         response = requests.get(url)
@@ -23,7 +21,7 @@ def get_flyer_url_alive(url:str) -> dict:
         return ret
 
 
-def main(shop:str, last_json:dict) -> dict:
+def main(shop: str, last_json: dict) -> dict:
     ret = {"ok": False}
     latest_upload = []
     url = "https://www.gyomusuper.jp/images/bargain_east.pdf"
@@ -41,14 +39,14 @@ def main(shop:str, last_json:dict) -> dict:
         return ret
 
     h = hashlib.md5()
-    with open(p,'rb') as hash_file:
+    with open(p, 'rb') as hash_file:
         r_hash = hash_file.read()
         h.update(r_hash)
         hash_digest = h.hexdigest()
 
-    if not hash_digest in last_json[shop]:
+    if hash_digest not in last_json[shop]:
         slack_client = lib.SlackAPI()
-        res = slack_client.upload_file_to_slack(p)
+        res = slack_client.upload_file_to_slack(p, shop)
         if res["ok"]:
             latest_upload.append(hash_digest)
 

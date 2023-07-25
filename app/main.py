@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 import json
 import os
-import lib
 import config as c
-import service_york, service_gs, service_tokubai
+import service_york
+import service_gs
+import service_tokubai
+
 
 def main():
 
@@ -22,36 +24,29 @@ def main():
         if shop == "ヨークマート":
             # pass
             ret = service_york.main(shop, last_json)
-            if ret["ok"]:
-                latest_json[shop] = ret["latest_upload"]
-            else:
-                latest_json[shop] = last_json[shop]
 
         elif shop == "業務スーパー":
             # pass
             ret = service_gs.main(shop, last_json)
-            if ret["ok"]:
-                latest_json[shop] = ret["latest_upload"]
-            else:
-                latest_json[shop] = last_json[shop]
 
-        elif shop == "マミーマート":
+        elif (shop == "マミーマート") or (shop == "マツモトキヨシ") or (shop == "コープ"):
             # pass
             ret = service_tokubai.main(shop, last_json)
-            if ret["ok"]:
-                latest_json[shop] = ret["latest_upload"]
-            else:
-                latest_json[shop] = last_json[shop]
 
         else:
             pass
+
+        if ret["ok"]:
+            latest_json[shop] = ret["latest_upload"]
+        else:
+            latest_json[shop] = last_json[shop]
 
     os.remove(LAST_JSON_PATH)
     with open(LAST_JSON_PATH, 'w', encoding="utf-8") as f:
         json.dump(latest_json, f, indent=4, ensure_ascii=False)
 
-
     return 0
 
+
 if __name__ == '__main__':
-  main()
+    main()

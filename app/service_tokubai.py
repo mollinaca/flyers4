@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 import lib
 import config as c
 
+
 def get_flyers_pages_url(shop: str) -> dict:
     """
     tokubai 店舗別チラシページからチラシページURLを取得する
@@ -15,7 +16,12 @@ def get_flyers_pages_url(shop: str) -> dict:
     url = c.target[shop]
 
     try:
-        UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36"
+        UA = (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/93.0.4577.63 Safari/537.36"
+        )
+
         headers = {'User-Agent': UA}
         res = requests.get(url, headers=headers)
         res.raise_for_status()
@@ -35,6 +41,7 @@ def get_flyers_pages_url(shop: str) -> dict:
     ret = {"ok": True, "urls": urls}
     return ret
 
+
 def get_flyer_url(url: str) -> dict:
     """
     tokubai 各チラシページからチラシURLを取得する
@@ -43,25 +50,32 @@ def get_flyer_url(url: str) -> dict:
     ret = {"ok": False}
 
     try:
-        UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36"
+        UA = (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/93.0.4577.63 Safari/537.36"
+        )
+
         headers = {'User-Agent': UA}
         res = requests.get(url, headers=headers)
         res.raise_for_status()
         html = BeautifulSoup(res.content, 'html.parser')
         view_state = html.find('div', {'id': 'view_state'})['data-view-state']
         data = json.loads(view_state)
-        current_leaflet_url = data['current_leaflet']['url']
-        current_leaflet_high_res_image_url = data['current_leaflet']['high_resolution_image_url'].split("?")[0]
-
+        current_leaflet_high_res_image_url = (
+            data['current_leaflet']['high_resolution_image_url']
+            .split("?")[0]
+        )
 
     except Exception as e:
         ret = {"ok": False, "e": str(e)}
         return ret
 
-    ret = {"ok":True, "url": current_leaflet_high_res_image_url}
+    ret = {"ok": True, "url": current_leaflet_high_res_image_url}
     return ret
 
-def main(shop:str, last_json:dict) -> dict:
+
+def main(shop: str, last_json: dict) -> dict:
     ret = {"ok": False}
     latest_upload = []
 
@@ -69,13 +83,11 @@ def main(shop:str, last_json:dict) -> dict:
     if not res["ok"]:
         return res
     flyer_page_urls = res["urls"]
-    
+
     flyer_urls = []
     for page_url in flyer_page_urls:
         url = get_flyer_url(page_url)
         flyer_urls.append(url["url"])
-
-
 
     for url in flyer_urls:
         if url in last_json[shop]:
@@ -88,7 +100,7 @@ def main(shop:str, last_json:dict) -> dict:
                 ret = {"ok": False, "p": p}
 
             slack_client = lib.SlackAPI()
-            res = slack_client.upload_file_to_slack(p)
+            res = slack_client.upload_file_to_slack(p, shop)
             if res["ok"]:
                 latest_upload.append(url)
             os.remove(p)

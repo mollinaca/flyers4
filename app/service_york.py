@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 import lib
 import config as c
 
+
 def get_flyers_url(shop: str) -> dict:
     """
     ヨークマートチラシの店舗ページから、チラシ単位のURL一覧をリストで取得する
@@ -16,7 +17,9 @@ def get_flyers_url(shop: str) -> dict:
     try:
         res = requests.get(c.target[shop])
         html = BeautifulSoup(res.content.decode('utf-8'), "html.parser")
-        elements = html.find_all(class_='store-details-viewer__display__item js-store-viewer__image')
+        elements = html.find_all(
+            class_='store-details-viewer__display__item js-store-viewer__image'
+            )
         file_paths = []
         for element in elements:
             img_tag = element.find('img')
@@ -34,7 +37,7 @@ def get_flyers_url(shop: str) -> dict:
     return ret
 
 
-def main(shop:str, last_json:dict) -> dict:
+def main(shop: str, last_json: dict) -> dict:
     ret = {"ok": False}
     latest_upload = []
 
@@ -43,7 +46,7 @@ def main(shop:str, last_json:dict) -> dict:
         return res
 
     for url in res["urls"]:
-        time.sleep (1)
+        time.sleep(1)
         if url in last_json[shop]:
             latest_upload.append(url)
         else:
@@ -54,7 +57,7 @@ def main(shop:str, last_json:dict) -> dict:
                 ret = {"ok": False, "p": p}
 
             slack_client = lib.SlackAPI()
-            res = slack_client.upload_file_to_slack(p)
+            res = slack_client.upload_file_to_slack(p, shop)
             if res["ok"]:
                 latest_upload.append(url)
             os.remove(p)
