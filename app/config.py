@@ -1,4 +1,4 @@
-development_mode = True
+development_mode = False
 
 target = {
     "ヨークマート": "https://www.york-inc.com/store/oomiyaminaminakano.html",
