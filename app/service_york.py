@@ -47,7 +47,7 @@ def main(shop: str, last_json: dict) -> dict:
 
     for url in res["urls"]:
         time.sleep(1)
-        if url in last_json[shop]:
+        if (shop in last_json and url in last_json[shop]):
             latest_upload.append(url)
         else:
             p = lib.dl(url)

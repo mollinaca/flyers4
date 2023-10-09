@@ -90,7 +90,7 @@ def main(shop: str, last_json: dict) -> dict:
         flyer_urls.append(url["url"])
 
     for url in flyer_urls:
-        if url in last_json[shop]:
+        if shop in last_json and url in last_json[shop]:
             latest_upload.append(url)
         else:
             p = lib.dl(url)

@@ -44,7 +44,8 @@ def main(shop: str, last_json: dict) -> dict:
         h.update(r_hash)
         hash_digest = h.hexdigest()
 
-    if hash_digest not in last_json[shop]:
+    if (shop in last_json and hash_digest not in last_json[shop]) or \
+       (shop not in last_json):
         slack_client = lib.SlackAPI()
         res = slack_client.upload_file_to_slack(p, shop)
         if res["ok"]:
