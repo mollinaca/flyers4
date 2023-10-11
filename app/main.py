@@ -22,15 +22,15 @@ def main():
 
     for shop in TARGET:
         if shop == "ヨークマート":
-            # pass
+            # ret = {"ok": False}
             ret = service_york.main(shop, last_json)
 
         elif shop == "業務スーパー":
-            # pass
+            # ret = {"ok": False}
             ret = service_gs.main(shop, last_json)
 
         elif (shop == "マミーマート") or (shop == "マツモトキヨシ") or (shop == "コープ"):
-            # pass
+            # ret = {"ok": False}
             ret = service_tokubai.main(shop, last_json)
 
         else:
