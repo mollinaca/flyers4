@@ -1,0 +1,6 @@
+version: '3'
+services:
+  flyers4-pytest:
+    build:
+      context: .
+      dockerfile: pytest.Dockerfile
