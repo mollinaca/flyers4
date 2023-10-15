@@ -2,6 +2,7 @@
 import json
 import os
 import config as c
+import lib
 import service_york
 import service_gs
 import service_tokubai
@@ -13,6 +14,8 @@ def main():
 
     if c.development_mode:
         LAST_JSON_PATH = "data/last_dev.json"
+        lib.logging(c.logfile_name, "development_mode : True")
+        lib.logging(c.logfile_name, f"LAST_JSON_PATH:{LAST_JSON_PATH}")
     else:
         LAST_JSON_PATH = "data/last.json"
 

@@ -1,11 +1,28 @@
 import os
 import shutil
 import requests
+from datetime import datetime, timedelta, timezone
 from dotenv import load_dotenv
 from slack_sdk import WebhookClient, WebClient
 from slack_sdk.errors import SlackApiError
 import config as c
 load_dotenv()
+
+
+def logging(log_file: str, message: str) -> dict:
+    ret = {"ok": False}
+    now = datetime.now(tz=timezone(timedelta(hours=9)))
+    ft = str(now.strftime("%Y%m%d %H:%M:%S"))
+
+    try:
+        with open(log_file, "a") as file:
+            file.write(f"{ft} : {message}" + "\n")
+            ret = {"ok": True}
+    except Exception as e:
+        ret = {"ok": False, "error": str(e)}
+        return ret
+
+    return ret
 
 
 def dl(url: str) -> dict:

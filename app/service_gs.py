@@ -1,9 +1,12 @@
+# flake8: noqa
+
 import os
 import time
 import requests
 import hashlib
 import lib
 from bs4 import BeautifulSoup
+import config as c
 
 
 def get_flyer_url_alive(url: str) -> dict:
@@ -130,6 +133,8 @@ def main(shop: str, last_json: dict) -> dict:
             res = slack_client.upload_file_to_slack(p, shop)
             if res["ok"]:
                 latest_upload.append(hash_digest)
+                if c.logging_enable:
+                    lib.logging(c.logfile_name, f"shop: {shop}, uploaded_filename : {p}, upload_flyer_hash : {hash_digest}")
 
         os.remove(p)
 
@@ -153,6 +158,8 @@ def main(shop: str, last_json: dict) -> dict:
                 res = slack_client.upload_file_to_slack(p, shop)
                 if res["ok"]:
                     latest_upload.append(hash_digest)
+                    if c.logging_enable:
+                        lib.logging(c.logfile_name, f"shop: {shop}, uploaded_filename : {p}, upload_flyer_hash : {hash_digest}")
 
             os.remove(p)
 

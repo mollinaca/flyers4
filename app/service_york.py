@@ -1,3 +1,5 @@
+# flake8: noqa
+
 import os
 import time
 import requests
@@ -60,6 +62,8 @@ def main(shop: str, last_json: dict) -> dict:
             res = slack_client.upload_file_to_slack(p, shop)
             if res["ok"]:
                 latest_upload.append(url)
+                if c.logging_enable:
+                    lib.logging(c.logfile_name, f"shop: {shop}, uploaded_filename : {p}, upload_flyer_url : {url}")
             os.remove(p)
 
     ret = {"ok": True, "latest_upload": latest_upload}
