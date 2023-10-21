@@ -20,4 +20,4 @@ FROM python:3.11-slim AS production-stage
 WORKDIR /app
 COPY --from=build-stage /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
 COPY --from=build-stage /app /app
-CMD ["python", "main.py"]
+#CMD ["python", "main.py"]
