@@ -118,7 +118,7 @@ def main(shop: str, last_json: dict) -> dict:
     # get_flyer_1
     res = get_flyer_1()
     if not res["ok"]:
-        pass
+        lib.logging(c.logfile_name, f"get_flyer_1() return error : {res['e']}")
     else:
         p = res["p"]
         h = hashlib.md5()
@@ -135,13 +135,15 @@ def main(shop: str, last_json: dict) -> dict:
                 latest_upload.append(hash_digest)
                 if c.logging_enable:
                     lib.logging(c.logfile_name, f"shop: {shop}, uploaded_filename : {p}, upload_flyer_hash : {hash_digest}")
+        else:
+            latest_upload.append(hash_digest)
 
         os.remove(p)
 
     # get_flyer_2
     res = get_flyer_2()
     if not res["ok"]:
-        pass
+        lib.logging(c.logfile_name, f"get_flyer_2() return error : ${res['e']}")
     else:
         ps = res["ps"]
 
@@ -160,6 +162,9 @@ def main(shop: str, last_json: dict) -> dict:
                     latest_upload.append(hash_digest)
                     if c.logging_enable:
                         lib.logging(c.logfile_name, f"shop: {shop}, uploaded_filename : {p}, upload_flyer_hash : {hash_digest}")
+
+            else:
+                latest_upload.append(hash_digest)
 
             os.remove(p)
 
