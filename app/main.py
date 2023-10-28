@@ -25,16 +25,20 @@ def main():
         last_json = json.load(f)
     latest_json = {}
 
-    for shop in TARGET:
+    for shop, shop_url in TARGET.items():
+
+        # ヨークマート
         if shop == "ヨークマート":
             # ret = {"ok": False}
             ret = service_york.main(shop, last_json)
 
+        # 業務スーパー
         elif shop == "業務スーパー":
             # ret = {"ok": False}
             ret = service_gs.main(shop, last_json)
 
-        elif (shop == "マミーマート") or (shop == "マツモトキヨシ") or (shop == "コープ"):
+        # トクバイ
+        elif "tokubai.co.jp" in shop_url:
             # ret = {"ok": False}
             ret = service_tokubai.main(shop, last_json)
 
