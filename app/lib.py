@@ -97,3 +97,49 @@ class SlackAPI():
             ret = {"ok": False, "exception": str(e)}
 
         return ret
+
+
+class DiscordAPI():
+
+    def iwebhook(self, message: str = "None") -> dict:
+        ret = {"ok": False}
+
+        if c.development_mode:
+            webhook_url = os.environ["DISCORD_WEBHOOK_URL_DEV"]
+        else:
+            webhook_url = os.environ["DISCORD_WEBHOOK_URL_DEV"]
+
+        try:
+            response = requests.post(webhook_url, json={"content": message})
+            if response.status_code == 200 or response.status_code == 204:
+                ret = {"ok": True, "response": response.text}
+            else:
+                ret = {"ok": False, "response": response.text}
+
+        except Exception as e:
+            ret = {"ok": False, "exception": str(e)}
+
+        return ret
+
+    def upload_file_to_discord(self, filepath: str = "None", title: str = None) -> dict:
+        ret = {"ok": False}
+
+        if c.development_mode:
+            webhook_url = os.environ["DISCORD_WEBHOOK_URL_DEV"]
+        else:
+            webhook_url = os.environ["DISCORD_WEBHOOK_URL_DEV"]
+
+        with open(filepath, "rb") as f:
+            files = {"file": f}
+
+            try:
+                response = requests.post(webhook_url, files=files)
+                if response.status_code == 200 or response.status_code == 204:
+                    ret = {"ok": True, "response": response.text}
+                else:
+                    ret = {"ok": False, "response": response.text}
+
+            except Exception as e:
+                ret = {"ok": False, "exception": str(e)}
+
+        return ret

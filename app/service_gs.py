@@ -131,6 +131,8 @@ def main(shop: str, last_json: dict) -> dict:
            (shop not in last_json):
             slack_client = lib.SlackAPI()
             res = slack_client.upload_file_to_slack(p, shop)
+            discord_client = lib.DiscordAPI()
+            res2 = discord_client.upload_file_to_discord(p, shop)
             if res["ok"]:
                 latest_upload.append(hash_digest)
                 if c.logging_enable:
@@ -158,7 +160,9 @@ def main(shop: str, last_json: dict) -> dict:
                (shop not in last_json):
                 slack_client = lib.SlackAPI()
                 res = slack_client.upload_file_to_slack(p, shop)
-                if res["ok"]:
+                discord_client = lib.DiscordAPI()
+                res2 = discord_client.upload_file_to_discord(p, shop)
+                if res1["ok"] and res2["ok"]:
                     latest_upload.append(hash_digest)
                     if c.logging_enable:
                         lib.logging(c.logfile_name, f"shop: {shop}, uploaded_filename : {p}, upload_flyer_hash : {hash_digest}")

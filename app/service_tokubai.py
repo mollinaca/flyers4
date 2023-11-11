@@ -102,8 +102,11 @@ def main(shop: str, last_json: dict) -> dict:
                 ret = {"ok": False, "p": p}
 
             slack_client = lib.SlackAPI()
-            res = slack_client.upload_file_to_slack(p, shop)
-            if res["ok"]:
+            res1 = slack_client.upload_file_to_slack(p, shop)
+            discord_client = lib.DiscordAPI()
+            res2 = discord_client.upload_file_to_discord(p, shop)
+
+            if res1["ok"] and res2["ok"]:
                 latest_upload.append(url)
                 if c.logging_enable:
                     lib.logging(c.logfile_name, f"shop: {shop}, uploaded_filename : {p}, upload_flyer_url : {url}")
