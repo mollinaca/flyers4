@@ -107,7 +107,7 @@ class DiscordAPI():
         if c.development_mode:
             webhook_url = os.environ["DISCORD_WEBHOOK_URL_DEV"]
         else:
-            webhook_url = os.environ["DISCORD_WEBHOOK_URL_DEV"]
+            webhook_url = os.environ["DISCORD_WEBHOOK_URL"]
 
         try:
             response = requests.post(webhook_url, json={"content": message})
@@ -127,7 +127,7 @@ class DiscordAPI():
         if c.development_mode:
             webhook_url = os.environ["DISCORD_WEBHOOK_URL_DEV"]
         else:
-            webhook_url = os.environ["DISCORD_WEBHOOK_URL_DEV"]
+            webhook_url = os.environ["DISCORD_WEBHOOK_URL"]
 
         with open(filepath, "rb") as f:
             files = {"file": f}
