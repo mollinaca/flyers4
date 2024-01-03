@@ -6,4 +6,4 @@ fi
 
 PATH=$PATH:/usr/bin/:/usr/local/bin
 # docker-compose up
-docker compose run flyers4 python main.py
+sudo docker compose run flyers4 python main.py
