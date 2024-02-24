@@ -78,7 +78,7 @@ def get_flyer_2() -> dict:
     return ret
 
 
-def get_flyer_2_urls() -> list:
+def get_flyer_2_urls() -> dict:
     """
     https://www.gyomusuper.jp/sale/kanto.html#%E5%9F%BC%E7%8E%89%E7%9C%8C
     このページのチラシURL一覧を取得してリストで返す
@@ -89,7 +89,7 @@ def get_flyer_2_urls() -> list:
 
     try:
         res = requests.get(url)
-        html = BeautifulSoup(res.content.decode('utf-8'), "html.parser")
+        html = BeautifulSoup(res.content.decode("utf-8"), "html.parser")
         item_list = html.find("ul", class_="item_list")
         urls = []
 
@@ -99,7 +99,7 @@ def get_flyer_2_urls() -> list:
             for img_tag in img_tags:
                 src = img_tag.get("src")
                 if src:
-                    if src.endswith('?2'):
+                    if src.endswith("?2"):
                         src = src[:-2]
                     urls.append(base_url + src)
 
@@ -122,13 +122,14 @@ def main(shop: str, last_json: dict) -> dict:
     else:
         p = res["p"]
         h = hashlib.md5()
-        with open(p, 'rb') as hash_file:
+        with open(p, "rb") as hash_file:
             r_hash = hash_file.read()
             h.update(r_hash)
             hash_digest = h.hexdigest()
 
-        if (shop in last_json and hash_digest not in last_json[shop]) or \
-           (shop not in last_json):
+        if (shop in last_json and hash_digest not in last_json[shop]) or (
+            shop not in last_json
+        ):
             slack_client = lib.SlackAPI()
             res = slack_client.upload_file_to_slack(p, shop)
             discord_client = lib.DiscordAPI()
@@ -136,7 +137,10 @@ def main(shop: str, last_json: dict) -> dict:
             if res["ok"]:
                 latest_upload.append(hash_digest)
                 if c.logging_enable:
-                    lib.logging(c.logfile_name, f"shop: {shop}, uploaded_filename : {p}, upload_flyer_hash : {hash_digest}")
+                    lib.logging(
+                        c.logfile_name,
+                        f"shop: {shop}, uploaded_filename : {p}, upload_flyer_hash : {hash_digest}",
+                    )
         else:
             latest_upload.append(hash_digest)
 
@@ -145,27 +149,31 @@ def main(shop: str, last_json: dict) -> dict:
     # get_flyer_2
     res = get_flyer_2()
     if not res["ok"]:
-        lib.logging(c.logfile_name, f"get_flyer_2() return error : ${res['e']}")
+        lib.logging(c.logfile_name, f"get_flyer_2() return error : ${res['error']}")
     else:
         ps = res["ps"]
 
         for p in ps:
             h = hashlib.md5()
-            with open(p, 'rb') as hash_file:
+            with open(p, "rb") as hash_file:
                 r_hash = hash_file.read()
                 h.update(r_hash)
                 hash_digest = h.hexdigest()
 
-            if (shop in last_json and hash_digest not in last_json[shop]) or \
-               (shop not in last_json):
+            if (shop in last_json and hash_digest not in last_json[shop]) or (
+                shop not in last_json
+            ):
                 slack_client = lib.SlackAPI()
-                res = slack_client.upload_file_to_slack(p, shop)
+                res1 = slack_client.upload_file_to_slack(p, shop)
                 discord_client = lib.DiscordAPI()
                 res2 = discord_client.upload_file_to_discord(p, shop)
                 if res1["ok"] and res2["ok"]:
                     latest_upload.append(hash_digest)
                     if c.logging_enable:
-                        lib.logging(c.logfile_name, f"shop: {shop}, uploaded_filename : {p}, upload_flyer_hash : {hash_digest}")
+                        lib.logging(
+                            c.logfile_name,
+                            f"shop: {shop}, uploaded_filename : {p}, upload_flyer_hash : {hash_digest}",
+                        )
 
             else:
                 latest_upload.append(hash_digest)
